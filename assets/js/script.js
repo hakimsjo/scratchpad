@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteAllBtn = document.getElementById('delete-all-btn');
     const emptyListMessage = document.getElementById('empty-list-message');
     const submitBtn = noteForm.querySelector('button[type="submit"]');
+    const searchInput = document.getElementById('search-input');
 
     const BTN_TEXT_SAVE = '<i class="bi bi-save-fill me-2"></i>Save Note';
     const BTN_TEXT_UPDATE = '<i class="bi bi-pencil-fill me-2"></i>Update Note';
@@ -27,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('notes', JSON.stringify(notes));
     };
 
-    const renderNotes = () => {
+    const renderNotes = (notesToRender = notes) => {
         noteList.innerHTML = '';
-        if (notes.length === 0) {
+        if (notesToRender.length === 0) {
             emptyListMessage.classList.remove('d-none');
             deleteAllBtn.classList.add('d-none');
         } else {
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteAllBtn.classList.remove('d-none');
         }
 
-        notes.forEach(note => {
+        notesToRender.forEach(note => {
             const li = document.createElement('li');
             li.className = 'list-group-item d-flex justify-content-between align-items-start';
             li.dataset.id = note.id;
@@ -138,6 +139,15 @@ document.addEventListener('DOMContentLoaded', () => {
             saveNotes();
             renderNotes();
         }
+    });
+
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredNotes = notes.filter(note => 
+            note.title.toLowerCase().includes(searchTerm) || 
+            note.content.toLowerCase().includes(searchTerm)
+        );
+        renderNotes(filteredNotes);
     });
 
     // --- Theme Switcher Logic ---
