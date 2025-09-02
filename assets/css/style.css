@@ -1,0 +1,23 @@
+/* Anpassad stil för en trevligare upplevelse */
+.list-group-item {
+    word-break: break-word;
+}
+
+.list-group-item .btn-group {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.list-group-item:hover .btn-group {
+    opacity: 1;
+}
+
+.theme-icon-active {
+    transition: transform 0.3s ease-in-out;
+}
+
+.note-content {
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
