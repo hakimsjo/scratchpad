@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: title,
             content: content
         };
-        notes.push(newNote);
+        notes.unshift(newNote);
         saveNotes();
         renderNotes();
     };
@@ -119,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const title = noteTitleInput.value.trim();
         const content = noteContentInput.value.trim();
-        if (title === '') return;
 
         if (editingNoteId !== null) {
             updateNote(editingNoteId, title, content);
