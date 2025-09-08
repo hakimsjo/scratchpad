@@ -100,11 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const deleteNote = (id) => {
-        if (confirm('Are you sure you want to delete this note?')) {
-            notes = notes.filter(note => note.id !== id);
-            saveNotes();
-            renderNotes();
-        }
+        notes = notes.filter(note => note.id !== id);
+        saveNotes();
+        renderNotes();
     };
 
     const startEditing = (id, currentTitle, currentContent) => {
