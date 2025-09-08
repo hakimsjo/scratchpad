@@ -1,0 +1,22 @@
+
+{
+    "name": "Scratchpad",
+    "short_name": "Scratchpad",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0d6efd",
+    "description": "A simple note-taking app.",
+    "icons": [
+        {
+            "src": "assets/icons/icon-192x192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "assets/icons/icon-512x512.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml"
+        }
+    ]
+}
