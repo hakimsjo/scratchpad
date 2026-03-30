@@ -35,29 +35,32 @@
     <main class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Note</h5>
-                        <form id="note-form">
-                            <div class="mb-3">
-                                <label for="note-title-input" class="form-label">Title</label>
-                                <input type="text" id="note-title-input" class="form-control" placeholder="Give your note a title">
-                            </div>
-                            <div class="mb-3">
-                                <label for="note-content-input" class="form-label">Note</label>
-                                <textarea id="note-content-input" class="form-control" rows="3" placeholder="Write your content here..."></textarea>
-                            </div>
-                            <button class="btn btn-primary" type="submit"><i class="bi bi-save-fill me-2"></i>Save Note</button>
-                        </form>
+                <div id="notes-list-panel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">My Notes</h5>
+                        <div class="btn-toolbar">
+                            <button id="new-note-btn" class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-plus-lg"></i>
+                                <span class="d-none d-sm-inline"> New Note</span>
+                            </button>
+                             <button class="btn btn-sm btn-outline-secondary me-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapsible-note-list" aria-expanded="true" aria-controls="collapsible-note-list" id="toggle-list-btn" title="Collapse list">
+                                <i class="bi bi-chevron-up"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">My Notes</h5>
-                    <div class="btn-toolbar">
-                         <button class="btn btn-sm btn-outline-secondary me-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapsible-note-list" aria-expanded="true" aria-controls="collapsible-note-list" id="toggle-list-btn" title="Collapse list">
-                            <i class="bi bi-chevron-up"></i>
-                        </button>
+                    <div class="mb-3">
+                        <input type="text" id="search-input" class="form-control" placeholder="Search notes...">
+                    </div>
+
+                    <div class="collapse show" id="collapsible-note-list">
+                        <ul id="note-list" class="list-group">
+                            <!-- Notes are rendered here by JavaScript -->
+                        </ul>
+                         <p id="empty-list-message" class="text-center text-muted mt-4 d-none">The list is empty. Add a new note!</p>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
                         <button id="delete-all-btn" class="btn btn-sm btn-danger">
                             <i class="bi bi-trash-fill"></i>
                             <span class="d-none d-sm-inline"> Delete All</span>
@@ -65,15 +68,30 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <input type="text" id="search-input" class="form-control" placeholder="Search notes...">
-                </div>
-
-                <div class="collapse show" id="collapsible-note-list">
-                    <ul id="note-list" class="list-group">
-                        <!-- Notes are rendered here by JavaScript -->
-                    </ul>
-                     <p id="empty-list-message" class="text-center text-muted mt-4 d-none">The list is empty. Add a new note!</p>
+                <div id="editor-panel" class="card mt-4 d-none">
+                    <div class="card-header pb-0 d-flex align-items-end justify-content-between gap-2">
+                        <ul class="nav nav-tabs card-header-tabs d-none" id="open-notes-tabs" role="tablist"></ul>
+                        <h6 id="active-note-label" class="mb-2 text-muted">Editing note</h6>
+                        <button id="active-note-close-btn" class="btn btn-sm btn-link text-muted mb-2 d-none" type="button" title="Close note">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <form id="note-form">
+                            <div class="mb-3">
+                                <label for="note-title-input" class="form-label">Title</label>
+                                <input type="text" id="note-title-input" class="form-control" placeholder="Give your note a title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="note-content-input" class="form-label">Note</label>
+                                <textarea id="note-content-input" class="form-control" rows="8" placeholder="Write your content here..."></textarea>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <button id="save-note-btn" class="btn btn-primary" type="submit"><i class="bi bi-save-fill me-2"></i>Save Now</button>
+                                <small id="autosave-status" class="text-muted">Autosave: idle</small>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

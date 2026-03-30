@@ -3,6 +3,15 @@
     word-break: break-word;
 }
 
+.note-open-btn {
+    border: 0;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    color: inherit;
+}
+
 .list-group-item .btn-group {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
@@ -20,4 +29,18 @@
     white-space: pre-wrap;
     font-size: 0.9rem;
     color: #6c757d;
+}
+
+.open-tab-item .nav-link {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#active-note-label {
+    font-weight: 600;
+}
+
+#active-note-close-btn {
+    text-decoration: none;
+    padding: 0.25rem 0.35rem;
 }
