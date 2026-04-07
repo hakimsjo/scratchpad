@@ -1,4 +1,19 @@
 /* Anpassad stil för en trevligare upplevelse */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#app-main {
+    flex: 1 1 auto;
+}
+
 .list-group-item {
     word-break: break-word;
 }
@@ -43,4 +58,60 @@
 #active-note-close-btn {
     text-decoration: none;
     padding: 0.25rem 0.35rem;
+}
+
+.delete-confirmation-modal .modal-content {
+    border-radius: 1rem;
+}
+
+.delete-confirmation-modal .modal-header,
+.delete-confirmation-modal .modal-footer {
+    border-color: rgba(108, 117, 125, 0.15);
+}
+
+body.editor-mode #app-main {
+    width: 100%;
+    max-width: none;
+    display: flex;
+    flex: 1 1 auto;
+}
+
+body.editor-mode #app-row,
+body.editor-mode #app-column {
+    flex: 1 1 auto;
+    max-width: none;
+}
+
+body.editor-mode #app-column {
+    display: flex;
+}
+
+body.editor-mode #editor-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 0 !important;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+body.editor-mode .editor-card-body,
+body.editor-mode .note-form,
+body.editor-mode .note-content-field {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+body.editor-mode .note-textarea {
+    flex: 1 1 auto;
+    min-height: 0;
+    resize: none;
+}
+
+@media (max-width: 991.98px) {
+    body.editor-mode #app-main {
+        margin-top: 0.75rem !important;
+    }
 }

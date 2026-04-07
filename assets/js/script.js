@@ -10,9 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const notesListPanel = document.getElementById('notes-list-panel');
     const editorPanel = document.getElementById('editor-panel');
+    const pageBody = document.body;
     const openNotesTabs = document.getElementById('open-notes-tabs');
     const activeNoteCloseBtn = document.getElementById('active-note-close-btn');
     const autosaveStatus = document.getElementById('autosave-status');
+    const deleteConfirmationModalElement = document.getElementById('delete-confirmation-modal');
+    const deleteConfirmationTitle = document.getElementById('delete-confirmation-title');
+    const deleteConfirmationMessage = document.getElementById('delete-confirmation-message');
+    const deleteConfirmationConfirmBtn = document.getElementById('delete-confirmation-confirm-btn');
+    const deleteConfirmationModal = new bootstrap.Modal(deleteConfirmationModalElement);
 
     const AUTOSAVE_DELAY_MS = 30000;
 
@@ -31,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTabId = null;
     let autosaveTimerId = null;
     let currentSearchTerm = '';
+    let pendingConfirmationAction = null;
 
     const saveNotes = () => {
         localStorage.setItem('notes', JSON.stringify(notes));
@@ -38,6 +45,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const setAutosaveStatus = (text) => {
         autosaveStatus.textContent = text;
+    };
+
+    const refreshUiAfterDelete = () => {
+        clearAutosaveTimer();
+        saveNotes();
+        renderFilteredNotes();
+        renderTabs();
+        renderEditor();
+        setAutosaveStatus(activeTabId ? 'Autosave: idle' : 'Open a note to start editing');
+    };
+
+    const deleteNoteById = (noteId) => {
+        notes = notes.filter(existingNote => existingNote.id !== noteId);
+        openTabs = openTabs.filter(tab => tab.id !== noteId);
+
+        if (activeTabId === noteId) {
+            activeTabId = openTabs.length > 0 ? openTabs[0].id : null;
+        }
+
+        refreshUiAfterDelete();
+    };
+
+    const deleteAllNotes = () => {
+        notes = [];
+        openTabs = openTabs.filter(tab => tab.isDraft);
+        activeTabId = openTabs.length > 0 ? openTabs[0].id : null;
+        refreshUiAfterDelete();
+    };
+
+    const showDeleteConfirmation = ({ title, message, confirmLabel, onConfirm }) => {
+        deleteConfirmationTitle.textContent = title;
+        deleteConfirmationMessage.textContent = message;
+        deleteConfirmationConfirmBtn.textContent = confirmLabel;
+        pendingConfirmationAction = onConfirm;
+        deleteConfirmationModal.show();
     };
 
     const getActiveTab = () => {
@@ -67,15 +109,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const setEditorMode = (isActive) => {
+        pageBody.classList.toggle('editor-mode', isActive);
+    };
+
     const renderEditor = () => {
         const activeTab = getActiveTab();
         if (!activeTab) {
+            setEditorMode(false);
             editorPanel.classList.add('d-none');
             notesListPanel.classList.remove('d-none');
             noteForm.reset();
             return;
         }
 
+        setEditorMode(true);
         editorPanel.classList.remove('d-none');
         notesListPanel.classList.add('d-none');
         noteTitleInput.value = activeTab.title;
@@ -187,20 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteBtn.className = 'btn btn-sm btn-outline-danger';
             deleteBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
             deleteBtn.addEventListener('click', () => {
-                notes = notes.filter(existingNote => existingNote.id !== note.id);
-                openTabs = openTabs.filter(tab => tab.id !== note.id);
-
-                if (activeTabId === note.id) {
-                    activeTabId = openTabs.length > 0 ? openTabs[0].id : null;
-                }
-
-                saveNotes();
-                renderNotes(notes.filter(candidate =>
-                    candidate.title.toLowerCase().includes(currentSearchTerm) ||
-                    candidate.content.toLowerCase().includes(currentSearchTerm)
-                ));
-                renderTabs();
-                renderEditor();
+                const noteTitleText = note.title.trim() || 'Untitled';
+                showDeleteConfirmation({
+                    title: 'Delete note?',
+                    message: `Delete "${noteTitleText}" permanently? This action cannot be undone.`,
+                    confirmLabel: 'Delete note',
+                    onConfirm: () => {
+                        deleteNoteById(note.id);
+                    }
+                });
             });
 
             btnGroup.appendChild(deleteBtn);
@@ -340,16 +383,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     deleteAllBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete ALL notes? This cannot be undone.')) {
-            notes = [];
-            openTabs = openTabs.filter(tab => tab.isDraft);
-            activeTabId = openTabs.length > 0 ? openTabs[0].id : null;
-            saveNotes();
-            renderFilteredNotes();
-            renderTabs();
-            renderEditor();
-            setAutosaveStatus(activeTabId ? 'Autosave: idle' : 'Open a note to start editing');
+        showDeleteConfirmation({
+            title: 'Delete all notes?',
+            message: 'Delete all saved notes permanently? This action cannot be undone.',
+            confirmLabel: 'Delete all',
+            onConfirm: () => {
+                deleteAllNotes();
+            }
+        });
+    });
+
+    deleteConfirmationConfirmBtn.addEventListener('click', () => {
+        if (pendingConfirmationAction) {
+            pendingConfirmationAction();
         }
+
+        pendingConfirmationAction = null;
+        deleteConfirmationModal.hide();
+    });
+
+    deleteConfirmationModalElement.addEventListener('hidden.bs.modal', () => {
+        pendingConfirmationAction = null;
     });
 
     searchInput.addEventListener('input', () => {
